@@ -31,6 +31,9 @@ class AgoraVideoButtons extends StatefulWidget {
   /// Use this to style the mute mic button as per your liking while still keeping the default functionality.
   final Widget? muteButtonChild;
 
+  /// Use this to style the speaker button as per your liking while still keeping the default functionality.
+  final Widget? speakerButtonChild;
+
   /// Use this to style the switch camera button as per your liking while still keeping the default functionality.
   final Widget? switchCameraButtonChild;
 
@@ -69,6 +72,7 @@ class AgoraVideoButtons extends StatefulWidget {
     this.onDisconnect,
     this.addScreenSharing = false,
     this.cloudRecordingEnabled = false,
+    this.speakerButtonChild,
   });
 
   @override
@@ -136,52 +140,33 @@ class _AgoraVideoButtonsState extends State<AgoraVideoButtons> {
                     ? Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
-                          _muteMicButton(),
-                          _disconnectCallButton(),
-                          _switchCameraButton(),
+                          widget.speakerButtonChild ?? SizedBox(),
                           _disableVideoButton(),
+                          _disconnectCallButton(),
+                          _muteMicButton(),
                           widget.cloudRecordingEnabled!
                               ? CloudRecordingButton(
                                   client: widget.client,
                                 )
                               : Container(),
-                          widget.addScreenSharing!
-                              ? _screenSharingButton()
-                              : Container(),
+                          widget.addScreenSharing! ? _screenSharingButton() : Container(),
                           if (widget.extraButtons != null)
-                            for (var i = 0;
-                                i < widget.extraButtons!.length;
-                                i++)
-                              widget.extraButtons![i],
+                            for (var i = 0; i < widget.extraButtons!.length; i++) widget.extraButtons![i],
                         ],
                       )
                     : Row(
                         children: [
-                          if (widget.enabledButtons!
-                              .contains(BuiltInButtons.toggleMic))
-                            _muteMicButton(),
-                          if (widget.enabledButtons!
-                              .contains(BuiltInButtons.callEnd))
-                            _disconnectCallButton(),
-                          if (widget.enabledButtons!
-                              .contains(BuiltInButtons.switchCamera))
-                            _switchCameraButton(),
-                          if (widget.enabledButtons!
-                              .contains(BuiltInButtons.toggleCamera))
-                            _disableVideoButton(),
-                          if (widget.enabledButtons!
-                              .contains(BuiltInButtons.cloudRecording))
+                          if (widget.enabledButtons!.contains(BuiltInButtons.toggleMic)) _muteMicButton(),
+                          if (widget.enabledButtons!.contains(BuiltInButtons.callEnd)) _disconnectCallButton(),
+                          if (widget.enabledButtons!.contains(BuiltInButtons.switchCamera)) _switchCameraButton(),
+                          if (widget.enabledButtons!.contains(BuiltInButtons.toggleCamera)) _disableVideoButton(),
+                          if (widget.enabledButtons!.contains(BuiltInButtons.cloudRecording))
                             CloudRecordingButton(
                               client: widget.client,
                             ),
-                          if (widget.enabledButtons!
-                              .contains(BuiltInButtons.screenSharing))
-                            _screenSharingButton(),
+                          if (widget.enabledButtons!.contains(BuiltInButtons.screenSharing)) _screenSharingButton(),
                           if (widget.extraButtons != null)
-                            for (var i = 0;
-                                i < widget.extraButtons!.length;
-                                i++)
-                              widget.extraButtons![i]
+                            for (var i = 0; i < widget.extraButtons!.length; i++) widget.extraButtons![i]
                         ],
                       ),
               ),
@@ -195,27 +180,21 @@ class _AgoraVideoButtonsState extends State<AgoraVideoButtons> {
   Widget _screenSharingButton() {
     return widget.screenSharingButtonWidget != null
         ? RawMaterialButton(
-            onPressed: () =>
-                shareScreen(sessionController: widget.client.sessionController),
+            onPressed: () => shareScreen(sessionController: widget.client.sessionController),
             child: widget.screenSharingButtonWidget,
           )
         : RawMaterialButton(
-            onPressed: () =>
-                shareScreen(sessionController: widget.client.sessionController),
+            onPressed: () => shareScreen(sessionController: widget.client.sessionController),
             child: Icon(
               widget.client.sessionController.value.turnOnScreenSharing
                   ? Icons.stop_screen_share_outlined
                   : Icons.screen_share_outlined,
-              color: widget.client.sessionController.value.turnOnScreenSharing
-                  ? Colors.white
-                  : Colors.blueAccent,
+              color: widget.client.sessionController.value.turnOnScreenSharing ? Colors.white : Colors.blueAccent,
               size: 20.0,
             ),
             shape: CircleBorder(),
             elevation: 2.0,
-            fillColor: widget.client.sessionController.value.turnOnScreenSharing
-                ? Colors.blueAccent
-                : Colors.white,
+            fillColor: widget.client.sessionController.value.turnOnScreenSharing ? Colors.blueAccent : Colors.white,
             padding: const EdgeInsets.all(12.0),
           );
   }
@@ -233,19 +212,13 @@ class _AgoraVideoButtonsState extends State<AgoraVideoButtons> {
               sessionController: widget.client.sessionController,
             ),
             child: Icon(
-              widget.client.sessionController.value.isLocalUserMuted
-                  ? Icons.mic_off
-                  : Icons.mic,
-              color: widget.client.sessionController.value.isLocalUserMuted
-                  ? Colors.white
-                  : Colors.blueAccent,
+              widget.client.sessionController.value.isLocalUserMuted ? Icons.mic_off : Icons.mic,
+              color: widget.client.sessionController.value.isLocalUserMuted ? Colors.white : Colors.blueAccent,
               size: 20.0,
             ),
             shape: CircleBorder(),
             elevation: 2.0,
-            fillColor: widget.client.sessionController.value.isLocalUserMuted
-                ? Colors.blueAccent
-                : Colors.white,
+            fillColor: widget.client.sessionController.value.isLocalUserMuted ? Colors.blueAccent : Colors.white,
             padding: const EdgeInsets.all(12.0),
           );
   }
@@ -303,20 +276,13 @@ class _AgoraVideoButtonsState extends State<AgoraVideoButtons> {
               sessionController: widget.client.sessionController,
             ),
             child: Icon(
-              widget.client.sessionController.value.isLocalVideoDisabled
-                  ? Icons.videocam_off
-                  : Icons.videocam,
-              color: widget.client.sessionController.value.isLocalVideoDisabled
-                  ? Colors.white
-                  : Colors.blueAccent,
+              widget.client.sessionController.value.isLocalVideoDisabled ? Icons.videocam_off : Icons.videocam,
+              color: widget.client.sessionController.value.isLocalVideoDisabled ? Colors.white : Colors.blueAccent,
               size: 20.0,
             ),
             shape: CircleBorder(),
             elevation: 2.0,
-            fillColor:
-                widget.client.sessionController.value.isLocalVideoDisabled
-                    ? Colors.blueAccent
-                    : Colors.white,
+            fillColor: widget.client.sessionController.value.isLocalVideoDisabled ? Colors.blueAccent : Colors.white,
             padding: const EdgeInsets.all(12.0),
           );
   }
@@ -340,12 +306,9 @@ class _AgoraVideoButtonsState extends State<AgoraVideoButtons> {
               ? widget.autoHideButtons!
                   ? Visibility(
                       visible: widget.client.sessionController.value.visible,
-                      child: toolbar(widget.enabledButtons == null
-                          ? null
-                          : buttonsEnabled),
+                      child: toolbar(widget.enabledButtons == null ? null : buttonsEnabled),
                     )
-                  : toolbar(
-                      widget.enabledButtons == null ? null : buttonsEnabled)
+                  : toolbar(widget.enabledButtons == null ? null : buttonsEnabled)
               : toolbar(widget.enabledButtons == null ? null : buttonsEnabled);
         });
   }
