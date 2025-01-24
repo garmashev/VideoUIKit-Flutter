@@ -43,7 +43,8 @@ class AgoraClient {
     this.agoraEventHandlers,
     this.agoraRtmClientEventHandler,
     this.agoraRtmChannelEventHandler,
-  }) : _initialized = false;
+  })  : _initialized = false,
+        _sessionController = SessionController(agoraConnectionData.uid ?? 0);
 
   /// Useful to check if [AgoraClient] is ready for further usage
   bool get isInitialized => _initialized;
@@ -56,13 +57,12 @@ class AgoraClient {
   }
 
   List<int> get users {
-    final List<int> version =
-        _sessionController.value.users.map((e) => e.uid).toList();
+    final List<int> version = _sessionController.value.users.map((e) => e.uid).toList();
     return version;
   }
 
   // This is our "state" object that the UI Kit works with
-  final SessionController _sessionController = SessionController();
+  final SessionController _sessionController;
   SessionController get sessionController {
     return _sessionController;
   }
@@ -77,25 +77,20 @@ class AgoraClient {
     }
 
     try {
-      await _sessionController.initializeEngine(
-          agoraConnectionData: agoraConnectionData);
+      await _sessionController.initializeEngine(agoraConnectionData: agoraConnectionData);
     } catch (e) {
-      log("Error while initializing Agora RTC SDK: $e",
-          level: Level.error.value);
+      log("Error while initializing Agora RTC SDK: $e", level: Level.error.value);
     }
 
     if (agoraConnectionData.rtmEnabled) {
       try {
-        await _sessionController.initializeRtm(
-            agoraRtmClientEventHandler ?? AgoraRtmClientEventHandler());
+        await _sessionController.initializeRtm(agoraRtmClientEventHandler ?? AgoraRtmClientEventHandler());
       } catch (e) {
-        log("Error while initializing Agora RTM SDK. ${e.toString()}",
-            level: Level.error.value);
+        log("Error while initializing Agora RTM SDK. ${e.toString()}", level: Level.error.value);
       }
     }
 
-    if (agoraChannelData?.clientRoleType ==
-            ClientRoleType.clientRoleBroadcaster ||
+    if (agoraChannelData?.clientRoleType == ClientRoleType.clientRoleBroadcaster ||
         agoraChannelData?.clientRoleType == null) {
       await _sessionController.askForUserCameraAndMicPermission();
     }

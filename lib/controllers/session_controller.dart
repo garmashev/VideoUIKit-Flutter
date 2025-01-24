@@ -23,7 +23,7 @@ import 'package:http/http.dart' as http;
 import 'package:permission_handler/permission_handler.dart';
 
 class SessionController extends ValueNotifier<AgoraSettings> {
-  SessionController()
+  SessionController(int uid)
       : super(
           AgoraSettings(
             engine: createAgoraRtcEngine(),
@@ -31,7 +31,7 @@ class SessionController extends ValueNotifier<AgoraSettings> {
             agoraRtmClient: null,
             users: [],
             mainAgoraUser: AgoraUser(
-              uid: 0,
+              uid: uid,
               remote: true,
               muted: false,
               videoDisabled: false,
@@ -54,8 +54,7 @@ class SessionController extends ValueNotifier<AgoraSettings> {
         );
 
   /// Function to initialize the Agora RTM client.
-  Future<void> initializeRtm(
-      AgoraRtmClientEventHandler agoraRtmClientEventHandler) async {
+  Future<void> initializeRtm(AgoraRtmClientEventHandler agoraRtmClientEventHandler) async {
     value = value.copyWith(
       agoraRtmClient: await AgoraRtmClient.createInstance(
         value.connectionData!.appId,
@@ -69,12 +68,10 @@ class SessionController extends ValueNotifier<AgoraSettings> {
   }
 
   /// Function to initialize the Agora RTC engine.
-  Future<void> initializeEngine(
-      {required AgoraConnectionData agoraConnectionData}) async {
+  Future<void> initializeEngine({required AgoraConnectionData agoraConnectionData}) async {
     value = value.copyWith(connectionData: agoraConnectionData);
 
-    await value.engine!
-        .initialize(RtcEngineContext(appId: value.connectionData!.appId));
+    await value.engine!.initialize(RtcEngineContext(appId: value.connectionData!.appId));
     log("SDK initialized: ${value.engine}", level: Level.error.value);
     // Getting SDK versions and assigning them
     SDKBuildInfo? rtcVersion = await value.engine?.getVersion();
@@ -102,8 +99,7 @@ class SessionController extends ValueNotifier<AgoraSettings> {
     );
   }
 
-  void createRtmClientEvents(
-      AgoraRtmClientEventHandler agoraRtmClientEventHandler) {
+  void createRtmClientEvents(AgoraRtmClientEventHandler agoraRtmClientEventHandler) {
     rtmClientEventHandler(
       agoraRtmClient: value.agoraRtmClient!,
       agoraRtmClientEventHandler: agoraRtmClientEventHandler,
@@ -114,54 +110,42 @@ class SessionController extends ValueNotifier<AgoraSettings> {
   /// Function to set all the channel properties.
   void setChannelProperties(AgoraChannelData agoraChannelData) async {
     await value.engine?.setChannelProfile(agoraChannelData.channelProfileType);
-    if (agoraChannelData.channelProfileType ==
-        ChannelProfileType.channelProfileLiveBroadcasting) {
+    if (agoraChannelData.channelProfileType == ChannelProfileType.channelProfileLiveBroadcasting) {
       await value.engine?.setClientRole(role: agoraChannelData.clientRoleType);
     } else {
-      log('You can only set channel profile in case of Live Broadcasting',
-          level: Level.warning.value);
+      log('You can only set channel profile in case of Live Broadcasting', level: Level.warning.value);
     }
 
-    value = value.copyWith(
-        isActiveSpeakerDisabled: agoraChannelData.isActiveSpeakerDisabled);
+    value = value.copyWith(isActiveSpeakerDisabled: agoraChannelData.isActiveSpeakerDisabled);
 
-    await value.engine
-        ?.muteAllRemoteVideoStreams(agoraChannelData.muteAllRemoteVideoStreams);
+    await value.engine?.muteAllRemoteVideoStreams(agoraChannelData.muteAllRemoteVideoStreams);
 
-    await value.engine
-        ?.muteAllRemoteAudioStreams(agoraChannelData.muteAllRemoteAudioStreams);
+    await value.engine?.muteAllRemoteAudioStreams(agoraChannelData.muteAllRemoteAudioStreams);
 
     if (agoraChannelData.setBeautyEffectOptions != null) {
-      await value.engine?.setBeautyEffectOptions(
-          enabled: true, options: agoraChannelData.setBeautyEffectOptions!);
+      await value.engine?.setBeautyEffectOptions(enabled: true, options: agoraChannelData.setBeautyEffectOptions!);
     }
 
-    await value.engine
-        ?.enableDualStreamMode(enabled: agoraChannelData.enableDualStreamMode);
+    await value.engine?.enableDualStreamMode(enabled: agoraChannelData.enableDualStreamMode);
 
     if (agoraChannelData.localPublishFallbackOption != null) {
-      await value.engine?.setLocalPublishFallbackOption(
-          agoraChannelData.localPublishFallbackOption!);
+      await value.engine?.setLocalPublishFallbackOption(agoraChannelData.localPublishFallbackOption!);
     }
 
     if (agoraChannelData.remoteSubscribeFallbackOption != null) {
-      await value.engine?.setRemoteSubscribeFallbackOption(
-          agoraChannelData.remoteSubscribeFallbackOption!);
+      await value.engine?.setRemoteSubscribeFallbackOption(agoraChannelData.remoteSubscribeFallbackOption!);
     }
 
     if (agoraChannelData.videoEncoderConfiguration != null) {
-      await value.engine?.setVideoEncoderConfiguration(
-          agoraChannelData.videoEncoderConfiguration!);
+      await value.engine?.setVideoEncoderConfiguration(agoraChannelData.videoEncoderConfiguration!);
     }
 
-    await value.engine?.setCameraAutoFocusFaceModeEnabled(
-        agoraChannelData.setCameraAutoFocusFaceModeEnabled);
+    await value.engine?.setCameraAutoFocusFaceModeEnabled(agoraChannelData.setCameraAutoFocusFaceModeEnabled);
 
     await value.engine?.setCameraTorchOn(agoraChannelData.setCameraTorchOn);
 
-    await value.engine?.setAudioProfile(
-        profile: agoraChannelData.audioProfileType,
-        scenario: agoraChannelData.audioScenarioType);
+    await value.engine
+        ?.setAudioProfile(profile: agoraChannelData.audioProfileType, scenario: agoraChannelData.audioScenarioType);
   }
 
   /// Function to join the video call.
@@ -170,13 +154,11 @@ class SessionController extends ValueNotifier<AgoraSettings> {
 
     // [generatedRtmId] is the unique ID for a user generated using the timestamp in milliseconds.
     value = value.copyWith(
-      generatedRtmId: value.connectionData!.rtmUid ??
-          DateTime.now().millisecondsSinceEpoch.toString(),
+      generatedRtmId: value.connectionData!.rtmUid ?? DateTime.now().millisecondsSinceEpoch.toString(),
     );
     await value.engine?.setParameters("{\"rtc.using_ui_kit\": 1}");
     await value.engine?.enableVideo();
-    await value.engine?.enableAudioVolumeIndication(
-        interval: 200, smooth: 3, reportVad: true);
+    await value.engine?.enableAudioVolumeIndication(interval: 200, smooth: 3, reportVad: true);
     if (value.connectionData?.tokenUrl != null) {
       await getToken(
         tokenUrl: value.connectionData!.tokenUrl,
@@ -245,14 +227,12 @@ class SessionController extends ValueNotifier<AgoraSettings> {
       value = value.copyWith(isLocalVideoDisabled: videoDisabled);
       // if remote user updates video
     } else if (uid == value.mainAgoraUser.uid) {
-      value = value.copyWith(
-          mainAgoraUser: AgoraUser(uid: uid, videoDisabled: videoDisabled));
+      value = value.copyWith(mainAgoraUser: AgoraUser(uid: uid, videoDisabled: videoDisabled));
     } else {
       List<AgoraUser> tempList = value.users;
       int indexOfUser = tempList.indexWhere((element) => element.uid == uid);
       if (indexOfUser == -1) return; //this means user is no longer in the call
-      tempList[indexOfUser] =
-          tempList[indexOfUser].copyWith(videoDisabled: videoDisabled);
+      tempList[indexOfUser] = tempList[indexOfUser].copyWith(videoDisabled: videoDisabled);
       value = value.copyWith(users: tempList);
     }
   }
@@ -291,11 +271,9 @@ class SessionController extends ValueNotifier<AgoraSettings> {
     value = value.copyWith(layoutType: updatedLayout);
   }
 
-  Future<void> startCloudRecording(
-      {required AgoraConnectionData connectionData}) async {
+  Future<void> startCloudRecording({required AgoraConnectionData connectionData}) async {
     final response = await http.post(
-      Uri.parse(
-          '${connectionData.cloudRecordingUrl}/start-recording/${connectionData.channelName}'),
+      Uri.parse('${connectionData.cloudRecordingUrl}/start-recording/${connectionData.channelName}'),
     );
 
     if (response.statusCode == HttpStatus.ok) {
@@ -303,16 +281,13 @@ class SessionController extends ValueNotifier<AgoraSettings> {
         sid: jsonDecode(response.body)['sid'],
         resourceId: jsonDecode(response.body)['resource_id'],
       );
-      log('Recording Started with SID ${value.sid} and RESOURCE ID: ${value.resourceId}',
-          level: Level.warning.value);
+      log('Recording Started with SID ${value.sid} and RESOURCE ID: ${value.resourceId}', level: Level.warning.value);
     } else {
-      log('Couldn\'t start the recording : ${response.statusCode}',
-          level: Level.error.value);
+      log('Couldn\'t start the recording : ${response.statusCode}', level: Level.error.value);
     }
   }
 
-  Future<void> stopCloudRecording(
-      {required AgoraConnectionData connectionData}) async {
+  Future<void> stopCloudRecording({required AgoraConnectionData connectionData}) async {
     final response = await http.post(
       Uri.parse(
           '${connectionData.cloudRecordingUrl}/stop-recording/${connectionData.channelName}/${value.sid}/${value.resourceId}'),
@@ -322,12 +297,10 @@ class SessionController extends ValueNotifier<AgoraSettings> {
       log('Recording Ended', level: Level.warning.value);
       if (connectionData.cloudRecordingCallback != null) {
         connectionData.cloudRecordingCallback!(
-            jsonDecode(response.body)['mp4_link'],
-            jsonDecode(response.body)['m3u8_link']);
+            jsonDecode(response.body)['mp4_link'], jsonDecode(response.body)['m3u8_link']);
       }
     } else {
-      log('Couldn\'t end the recording : ${response.statusCode}',
-          level: Level.error.value);
+      log('Couldn\'t end the recording : ${response.statusCode}', level: Level.error.value);
     }
   }
 }
