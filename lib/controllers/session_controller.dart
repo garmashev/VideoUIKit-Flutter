@@ -271,9 +271,10 @@ class SessionController extends ValueNotifier<AgoraSettings> {
     value = value.copyWith(layoutType: updatedLayout);
   }
 
-  Future<void> startCloudRecording({required AgoraConnectionData connectionData}) async {
+  Future<void> startCloudRecording({required AgoraConnectionData connectionData, Map<String, String>? headers}) async {
     final response = await http.post(
       Uri.parse('${connectionData.cloudRecordingUrl}/start-recording/${connectionData.channelName}'),
+      headers: headers,
     );
 
     if (response.statusCode == HttpStatus.ok) {
@@ -287,10 +288,11 @@ class SessionController extends ValueNotifier<AgoraSettings> {
     }
   }
 
-  Future<void> stopCloudRecording({required AgoraConnectionData connectionData}) async {
+  Future<void> stopCloudRecording({required AgoraConnectionData connectionData, Map<String, String>? headers}) async {
     final response = await http.post(
       Uri.parse(
           '${connectionData.cloudRecordingUrl}/stop-recording/${connectionData.channelName}/${value.sid}/${value.resourceId}'),
+      headers: headers,
     );
 
     if (response.statusCode == HttpStatus.ok) {
