@@ -2,7 +2,7 @@ group 'io.agora.agora_flutter_uikit'
 version '1.0-SNAPSHOT'
 
 buildscript {
-    ext.kotlin_version = '1.9.23'
+    ext.kotlin_version = '1.6.0'
     repositories {
         google()
         jcenter()
@@ -20,6 +20,7 @@ rootProject.allprojects {
         jcenter()
     }
 }
+
 
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
