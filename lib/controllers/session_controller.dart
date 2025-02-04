@@ -31,7 +31,7 @@ class SessionController extends ValueNotifier<AgoraSettings> {
             agoraRtmClient: null,
             users: [],
             mainAgoraUser: AgoraUser(
-              uid: uid,
+              uid: 0,
               remote: true,
               muted: false,
               videoDisabled: false,
@@ -175,7 +175,9 @@ class SessionController extends ValueNotifier<AgoraSettings> {
     }
 
     await value.engine?.startPreview();
-
+    try {
+      await value.engine?.setLogLevel(LogLevel.logLevelNone);
+    } catch (_) {}
     await value.engine?.joinChannel(
       token: value.connectionData?.tempToken ?? value.generatedToken ?? "",
       channelId: value.connectionData!.channelName,
