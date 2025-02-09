@@ -41,6 +41,8 @@ class AgoraVideoViewer extends StatefulWidget {
   /// Render mode for local and remote video
   final RenderModeType renderModeType;
 
+  final Widget? changeCamera;
+
   const AgoraVideoViewer({
     super.key,
     required this.client,
@@ -54,6 +56,7 @@ class AgoraVideoViewer extends StatefulWidget {
     this.enableHostControls = false,
     this.showNumberOfUsers = false,
     this.renderModeType = RenderModeType.renderModeHidden,
+    this.changeCamera,
   });
 
   @override
@@ -63,8 +66,7 @@ class AgoraVideoViewer extends StatefulWidget {
 class _AgoraVideoViewerState extends State<AgoraVideoViewer> {
   @override
   void initState() {
-    widget.client.sessionController
-        .updateLayoutType(updatedLayout: widget.layoutType);
+    widget.client.sessionController.updateLayoutType(updatedLayout: widget.layoutType);
     super.initState();
   }
 
