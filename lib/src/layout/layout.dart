@@ -84,6 +84,7 @@ class _AgoraVideoViewerState extends State<AgoraVideoViewer> {
           enableHostControl: widget.enableHostControls,
           showNumberOfUsers: widget.showNumberOfUsers,
           renderModeType: widget.renderModeType,
+          changeCamera: widget.changeCamera,
         );
       case Layout.grid:
         return GridLayout(
