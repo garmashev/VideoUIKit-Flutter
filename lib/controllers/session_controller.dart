@@ -193,6 +193,10 @@ class SessionController extends ValueNotifier<AgoraSettings> {
     value = value.copyWith(users: [...value.users, callUser]);
   }
 
+  void setUsers({required List<AgoraUser> users}) {
+    value = value.copyWith(users: users);
+  }
+
   void clearUsers() {
     value = value.copyWith(users: []);
   }
