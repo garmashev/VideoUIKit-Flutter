@@ -10,7 +10,7 @@ class AgoraSettings {
   final AgoraRtmChannel? agoraRtmChannel;
   final AgoraRtmClient? agoraRtmClient;
   final AgoraConnectionData? connectionData;
-  final List<AgoraUser> users;
+  final Set<AgoraUser> users;
   final AgoraUser mainAgoraUser;
   final bool isLocalUserMuted;
   final bool isLocalVideoDisabled;
@@ -77,7 +77,7 @@ class AgoraSettings {
     AgoraRtmChannel? agoraRtmChannel,
     AgoraRtmClient? agoraRtmClient,
     AgoraConnectionData? connectionData,
-    List<AgoraUser>? users,
+    Set<AgoraUser>? users,
     AgoraUser? mainAgoraUser,
     bool? isLocalUserMuted,
     bool? isLocalVideoDisabled,
@@ -122,8 +122,7 @@ class AgoraSettings {
       generatedRtmId: generatedRtmId ?? this.generatedRtmId,
       isLoggedIn: isLoggedIn ?? this.isLoggedIn,
       isInChannel: isInChannel ?? this.isInChannel,
-      isActiveSpeakerDisabled:
-          isActiveSpeakerDisabled ?? this.isActiveSpeakerDisabled,
+      isActiveSpeakerDisabled: isActiveSpeakerDisabled ?? this.isActiveSpeakerDisabled,
       layoutType: layoutType ?? this.layoutType,
       displaySnackbar: displaySnackbar ?? this.displaySnackbar,
       muteRequest: muteRequest ?? this.muteRequest,

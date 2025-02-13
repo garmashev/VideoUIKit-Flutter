@@ -29,7 +29,7 @@ class SessionController extends ValueNotifier<AgoraSettings> {
             engine: createAgoraRtcEngine(),
             agoraRtmChannel: null,
             agoraRtmClient: null,
-            users: [],
+            users: {},
             mainAgoraUser: AgoraUser(
               uid: uid,
               remote: true,
@@ -190,25 +190,22 @@ class SessionController extends ValueNotifier<AgoraSettings> {
   }
 
   void addUser({required AgoraUser callUser}) {
-    value = value.copyWith(users: [...value.users, callUser]);
+    final newSet = Set<AgoraUser>.from(value.users);
+    newSet.add(callUser);
+    value = value.copyWith(users: newSet);
   }
 
-  void setUsers({required List<AgoraUser> users}) {
+  void setUsers({required Set<AgoraUser> users}) {
     value = value.copyWith(users: users);
   }
 
   void clearUsers() {
-    value = value.copyWith(users: []);
+    value = value.copyWith(users: {});
   }
 
   void removeUser({required int uid}) {
-    List<AgoraUser> tempList = <AgoraUser>[];
-    tempList = value.users;
-    for (int i = 0; i < tempList.length; i++) {
-      if (tempList[i].uid == uid) {
-        tempList.remove(tempList[i]);
-      }
-    }
+    Set<AgoraUser> tempList = value.users;
+    tempList.toList().removeWhere((e) => e.uid == uid);
     value = value.copyWith(users: tempList);
   }
 
@@ -235,11 +232,11 @@ class SessionController extends ValueNotifier<AgoraSettings> {
     } else if (uid == value.mainAgoraUser.uid) {
       value = value.copyWith(mainAgoraUser: AgoraUser(uid: uid, videoDisabled: videoDisabled));
     } else {
-      List<AgoraUser> tempList = value.users;
+      List<AgoraUser> tempList = value.users.toList();
       int indexOfUser = tempList.indexWhere((element) => element.uid == uid);
       if (indexOfUser == -1) return; //this means user is no longer in the call
       tempList[indexOfUser] = tempList[indexOfUser].copyWith(videoDisabled: videoDisabled);
-      value = value.copyWith(users: tempList);
+      value = value.copyWith(users: tempList.toSet());
     }
   }
 
@@ -251,11 +248,11 @@ class SessionController extends ValueNotifier<AgoraSettings> {
     } else if (uid == value.mainAgoraUser.uid) {
       value = value.copyWith(mainAgoraUser: AgoraUser(uid: uid, muted: muted));
     } else {
-      List<AgoraUser> tempList = value.users;
+      List<AgoraUser> tempList = value.users.toList();
       int indexOfUser = tempList.indexWhere((element) => element.uid == uid);
       if (indexOfUser == -1) return; //this means user is no longer in the call
       tempList[indexOfUser] = tempList[indexOfUser].copyWith(muted: muted);
-      value = value.copyWith(users: tempList);
+      value = value.copyWith(users: tempList.toSet());
     }
   }
 
@@ -266,7 +263,7 @@ class SessionController extends ValueNotifier<AgoraSettings> {
 
   /// Function to swap [AgoraUser] in the floating layout.
   void swapUser({required int index}) {
-    final AgoraUser newUser = value.users[index];
+    final AgoraUser newUser = value.users.toList()[index];
     final AgoraUser tempAgoraUser = value.mainAgoraUser;
     value = value.copyWith(mainAgoraUser: newUser);
     addUser(callUser: tempAgoraUser);

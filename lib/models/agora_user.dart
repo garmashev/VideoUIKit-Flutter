@@ -1,3 +1,4 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:agora_rtc_engine/agora_rtc_engine.dart';
 
 /// Data class of a user present in a channel.
@@ -30,5 +31,17 @@ class AgoraUser {
       videoDisabled: videoDisabled ?? this.videoDisabled,
       clientRoleType: clientRoleType ?? this.clientRoleType,
     );
+  }
+
+  @override
+  bool operator ==(covariant AgoraUser other) {
+    if (identical(this, other)) return true;
+
+    return other.uid == uid;
+  }
+
+  @override
+  int get hashCode {
+    return uid.hashCode;
   }
 }

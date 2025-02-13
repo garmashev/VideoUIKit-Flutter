@@ -59,8 +59,7 @@ class _OneToOneLayoutState extends State<OneToOneLayout> {
         rtcEngine: widget.client.sessionController.value.engine!,
         canvas: VideoCanvas(uid: uid, renderMode: widget.renderModeType),
         connection: RtcConnection(
-          channelId:
-              widget.client.sessionController.value.connectionData!.channelName,
+          channelId: widget.client.sessionController.value.connectionData!.channelName,
         ),
       ),
     );
@@ -82,8 +81,7 @@ class _OneToOneLayoutState extends State<OneToOneLayout> {
               children: [
                 Positioned.fill(
                   child: Container(
-                    child: widget.client.sessionController.value.users[0]
-                            .videoDisabled
+                    child: widget.client.sessionController.value.users.toList()[0].videoDisabled
                         ? widget.disabledVideoWidget
                         : Stack(
                             children: [
@@ -116,9 +114,7 @@ class _OneToOneLayoutState extends State<OneToOneLayout> {
                     child: Container(
                       height: MediaQuery.of(context).size.height * 0.2,
                       width: MediaQuery.of(context).size.width / 3,
-                      child: ClipRRect(
-                          borderRadius: BorderRadius.circular(20),
-                          child: _getLocalViews()),
+                      child: ClipRRect(borderRadius: BorderRadius.circular(20), child: _getLocalViews()),
                     ),
                   ),
                 ),

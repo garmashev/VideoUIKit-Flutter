@@ -245,7 +245,7 @@ Future<RtcEngineEventHandler> rtcEngineEventHandler(
     log(info, name: tag, level: Level.info.value);
     if (sessionController.value.isActiveSpeakerDisabled == false &&
         sessionController.value.layoutType == Layout.floating) {
-      final int index = sessionController.value.users.indexWhere((element) => element.uid == uid);
+      final int index = sessionController.value.users.toList().indexWhere((element) => element.uid == uid);
       sessionController.swapUser(index: index);
     } else {
       log("Active speaker is disabled", level: Level.info.value, name: tag);

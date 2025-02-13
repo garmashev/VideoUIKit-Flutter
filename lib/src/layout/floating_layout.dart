@@ -126,7 +126,7 @@ class _FloatingLayoutState extends State<FloatingLayout> {
                   scrollDirection: Axis.horizontal,
                   itemCount: widget.client.sessionController.value.users.length,
                   itemBuilder: (BuildContext context, int index) {
-                    return widget.client.sessionController.value.users[index].uid !=
+                    return widget.client.sessionController.value.users.toList()[index].uid !=
                             widget.client.sessionController.value.mainAgoraUser.uid
                         ? Padding(
                             key: Key('$index'),
@@ -135,7 +135,7 @@ class _FloatingLayoutState extends State<FloatingLayout> {
                               width: widget.floatingLayoutContainerWidth ?? MediaQuery.of(context).size.width / 3,
                               child: Column(
                                 children: [
-                                  widget.client.sessionController.value.users[index].uid ==
+                                  widget.client.sessionController.value.users.toList()[index].uid ==
                                           widget.client.sessionController.value.localUid
                                       ? Expanded(
                                           child: Container(
@@ -195,7 +195,7 @@ class _FloatingLayoutState extends State<FloatingLayout> {
                                             ),
                                           ),
                                         )
-                                      : widget.client.sessionController.value.users[index].videoDisabled
+                                      : widget.client.sessionController.value.users.toList()[index].videoDisabled
                                           ? Expanded(
                                               child: Stack(
                                                 children: [
@@ -237,10 +237,13 @@ class _FloatingLayoutState extends State<FloatingLayout> {
                                                               ? Container()
                                                               : HostControls(
                                                                   client: widget.client,
-                                                                  videoDisabled: widget.client.sessionController.value
-                                                                      .users[index].videoDisabled,
-                                                                  muted: widget.client.sessionController.value
-                                                                      .users[index].muted,
+                                                                  videoDisabled: widget
+                                                                      .client.sessionController.value.users
+                                                                      .toList()[index]
+                                                                      .videoDisabled,
+                                                                  muted: widget.client.sessionController.value.users
+                                                                      .toList()[index]
+                                                                      .muted,
                                                                   index: index,
                                                                 ),
                                                         ),
@@ -253,10 +256,12 @@ class _FloatingLayoutState extends State<FloatingLayout> {
                                                   )),
                                                   widget.showAVState!
                                                       ? UserAVStateWidget(
-                                                          videoDisabled: widget.client.sessionController.value
-                                                              .users[index].videoDisabled,
-                                                          muted:
-                                                              widget.client.sessionController.value.users[index].muted)
+                                                          videoDisabled: widget.client.sessionController.value.users
+                                                              .toList()[index]
+                                                              .videoDisabled,
+                                                          muted: widget.client.sessionController.value.users
+                                                              .toList()[index]
+                                                              .muted)
                                                       : Container(),
                                                 ],
                                               ),
@@ -268,7 +273,9 @@ class _FloatingLayoutState extends State<FloatingLayout> {
                                                     children: [
                                                       _videoView(
                                                         _getRemoteViews(
-                                                          widget.client.sessionController.value.users[index].uid,
+                                                          widget.client.sessionController.value.users
+                                                              .toList()[index]
+                                                              .uid,
                                                         ),
                                                       ),
                                                     ],
@@ -307,10 +314,13 @@ class _FloatingLayoutState extends State<FloatingLayout> {
                                                               ? Container()
                                                               : HostControls(
                                                                   client: widget.client,
-                                                                  videoDisabled: widget.client.sessionController.value
-                                                                      .users[index].videoDisabled,
-                                                                  muted: widget.client.sessionController.value
-                                                                      .users[index].muted,
+                                                                  videoDisabled: widget
+                                                                      .client.sessionController.value.users
+                                                                      .toList()[index]
+                                                                      .videoDisabled,
+                                                                  muted: widget.client.sessionController.value.users
+                                                                      .toList()[index]
+                                                                      .muted,
                                                                   index: index,
                                                                 ),
                                                         ),
@@ -319,10 +329,12 @@ class _FloatingLayoutState extends State<FloatingLayout> {
                                                   ),
                                                   widget.showAVState!
                                                       ? UserAVStateWidget(
-                                                          videoDisabled: widget.client.sessionController.value
-                                                              .users[index].videoDisabled,
-                                                          muted:
-                                                              widget.client.sessionController.value.users[index].muted)
+                                                          videoDisabled: widget.client.sessionController.value.users
+                                                              .toList()[index]
+                                                              .videoDisabled,
+                                                          muted: widget.client.sessionController.value.users
+                                                              .toList()[index]
+                                                              .muted)
                                                       : Container(),
                                                 ],
                                               ),
@@ -360,10 +372,10 @@ class _FloatingLayoutState extends State<FloatingLayout> {
                                     client: widget.client,
                                     videoDisabled: widget.client.sessionController.value.mainAgoraUser.videoDisabled,
                                     muted: widget.client.sessionController.value.mainAgoraUser.muted,
-                                    index: widget.client.sessionController.value.users.indexWhere(
-                                      (element) =>
-                                          element.uid == widget.client.sessionController.value.mainAgoraUser.uid,
-                                    ),
+                                    index: widget.client.sessionController.value.users.toList().indexWhere(
+                                          (element) =>
+                                              element.uid == widget.client.sessionController.value.mainAgoraUser.uid,
+                                        ),
                                   ),
                           ),
                         ],

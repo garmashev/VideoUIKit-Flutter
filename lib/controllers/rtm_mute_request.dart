@@ -16,7 +16,7 @@ void hostControl({
   String? peerId;
 
   var muteRequest = MuteRequest(
-    rtcId: sessionController.value.users[index].uid,
+    rtcId: sessionController.value.users.toList()[index].uid,
     mute: mute,
     device: device.index,
     isForceful: false,
@@ -26,11 +26,10 @@ void hostControl({
   Message message = Message(text: json);
   RtmMessage msg = RtmMessage.fromText(message.text);
   sessionController.value.uidToUserIdMap!.forEach((key, val) {
-    if (key == sessionController.value.users[index].uid) {
+    if (key == sessionController.value.users.toList()[index].uid) {
       peerId = val;
       if (sessionController.value.isLoggedIn) {
-        sessionController.value.agoraRtmClient
-            ?.sendMessageToPeer2(peerId!, msg);
+        sessionController.value.agoraRtmClient?.sendMessageToPeer2(peerId!, msg);
       } else {
         log("User not logged in", level: Level.warning.value);
       }
