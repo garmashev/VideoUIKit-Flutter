@@ -204,9 +204,14 @@ class SessionController extends ValueNotifier<AgoraSettings> {
   }
 
   void removeUser({required int uid}) {
-    Set<AgoraUser> tempList = value.users;
-    tempList.toList().removeWhere((e) => e.uid == uid);
-    value = value.copyWith(users: tempList);
+    List<AgoraUser> tempList = <AgoraUser>[];
+    tempList = value.users.toList();
+    for (int i = 0; i < tempList.length; i++) {
+      if (tempList[i].uid == uid) {
+        tempList.remove(tempList[i]);
+      }
+    }
+    value = value.copyWith(users: tempList.toSet());
   }
 
   void checkForMaxUser({int? uid}) {
